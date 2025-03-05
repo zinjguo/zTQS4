@@ -1,7 +1,7 @@
 #ifndef HID_HEADER_FILE_H
 #define HID_HEADER_FILE_H
 
-#include <arduino.h>
+#include <Arduino.h>
 #include <Adafruit_TinyUSB.h>
 
 #define TUD_HID_REPORT_DESC_GAMEPAD_16BIT_AXIS(...)                                                     \
@@ -45,7 +45,6 @@
       HID_REPORT_SIZE    ( 8                                      ) ,\
       HID_REPORT_COUNT    ( 47                                    ) ,\
       HID_INPUT          ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE ) ,\
-      /*OUT report for 255 bytes of custom data */ \
       HID_USAGE(0x03),                                                                                  \
       HID_LOGICAL_MIN(0),                                                                               \
       HID_LOGICAL_MAX_N(0xff, 2),                                                                             \
@@ -102,14 +101,30 @@
     HID_COLLECTION_END                                            , \
   HID_COLLECTION_END \
 
-   
+#define TUD_HID_REPORT_DESC_JOYSTICK_SETTINGS(...) \
+  HID_USAGE_PAGE_N(HID_USAGE_PAGE_VENDOR, 2), \
+  HID_USAGE(0x04), \
+  HID_COLLECTION(HID_COLLECTION_APPLICATION), \
+    __VA_ARGS__ \
+    HID_USAGE(0x05), \
+    HID_LOGICAL_MIN(0), \
+    HID_LOGICAL_MAX(255), \
+    HID_REPORT_SIZE(8), \
+    HID_REPORT_COUNT(64), \
+    HID_INPUT(HID_DATA | HID_VARIABLE | HID_ABSOLUTE), \
+    HID_USAGE(0x06), \
+    HID_LOGICAL_MIN(0), \
+    HID_LOGICAL_MAX(255), \
+    HID_REPORT_SIZE(8), \
+    HID_REPORT_COUNT(64), \
+    HID_OUTPUT(HID_DATA | HID_VARIABLE | HID_ABSOLUTE), \
+  HID_COLLECTION_END
 
+const uint8_t desc_hid_report[] =
+  {
+      TUD_HID_REPORT_DESC_GAMEPAD_16BIT_AXIS(),
 
-uint8_t const desc_hid_report[] =
-    {
-        TUD_HID_REPORT_DESC_GAMEPAD_16BIT_AXIS(),
-
-  };
+};
 
 uint8_t const desc_hid_report_mouse[] =
   {
@@ -139,5 +154,10 @@ typedef struct TU_ATTR_PACKED {
     int8_t wheel;    // 8 bits for vertical wheel (relative movement)
     int8_t  pan;     // using AC Pan
 } hid_mouse_zfsb_report_t;
+
+typedef struct TU_ATTR_PACKED
+{
+  uint8_t settings[64];
+} hid_joystick_settings_report_t;
 
 #endif // HID_HEADER_FILE_H

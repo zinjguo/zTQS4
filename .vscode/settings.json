@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        ".theme": "php",
+        "bitset": "cpp",
+        "stdexcept": "cpp"
+    }
+}

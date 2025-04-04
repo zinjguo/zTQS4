@@ -1,7 +1,7 @@
 #ifndef HID_HEADER_FILE_H
 #define HID_HEADER_FILE_H
 
-#include <Arduino.h>
+#include <arduino.h>
 #include <Adafruit_TinyUSB.h>
 
 #define TUD_HID_REPORT_DESC_GAMEPAD_16BIT_AXIS(...)                                                     \
@@ -16,7 +16,7 @@
       HID_USAGE(HID_USAGE_DESKTOP_RZ),                                                                  \
       HID_USAGE(HID_USAGE_DESKTOP_RX),                                                                  \
       HID_USAGE(HID_USAGE_DESKTOP_RY),                                                                  \
-      HID_LOGICAL_MIN_N(0x8001, 2),                                                                     \
+      HID_LOGICAL_MIN_N(0x8000, 2),                                                                     \
       HID_LOGICAL_MAX_N(0x7FFF, 2),                                                                     \
       HID_REPORT_COUNT(6),                                                                              \
       HID_REPORT_SIZE(16),                                                                              \
@@ -38,20 +38,8 @@
       HID_REPORT_COUNT(32),                                                                             \
       HID_REPORT_SIZE(1),                                                                               \
       HID_INPUT(HID_DATA | HID_VARIABLE | HID_ABSOLUTE),                                                \
-      HID_USAGE_PAGE_N   ( HID_USAGE_PAGE_VENDOR,2 ), /* IN report for 255 bytes of data */           \
-      HID_USAGE          ( 0x02                                   ) ,\
-      HID_LOGICAL_MIN    ( 0                                      ) ,\
-      HID_LOGICAL_MAX_N  ( 0xff, 2                                    ) ,\
-      HID_REPORT_SIZE    ( 8                                      ) ,\
-      HID_REPORT_COUNT    ( 47                                    ) ,\
-      HID_INPUT          ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE ) ,\
-      HID_USAGE(0x03),                                                                                  \
-      HID_LOGICAL_MIN(0),                                                                               \
-      HID_LOGICAL_MAX_N(0xff, 2),                                                                             \
-      HID_REPORT_SIZE(8), \
-      HID_REPORT_COUNT(5), \
-      HID_OUTPUT(HID_DATA | HID_VARIABLE | HID_ABSOLUTE),                                               \
       HID_COLLECTION_END
+
 
 #define TUD_HID_REPORT_DESC_MOUSE_ZFSB(...) \
   HID_USAGE_PAGE ( HID_USAGE_PAGE_DESKTOP      )                   ,\
@@ -101,29 +89,12 @@
     HID_COLLECTION_END                                            , \
   HID_COLLECTION_END \
 
-#define TUD_HID_REPORT_DESC_JOYSTICK_SETTINGS(...) \
-  HID_USAGE_PAGE_N(HID_USAGE_PAGE_VENDOR, 2), \
-  HID_USAGE(0x04), \
-  HID_COLLECTION(HID_COLLECTION_APPLICATION), \
-    __VA_ARGS__ \
-    HID_USAGE(0x05), \
-    HID_LOGICAL_MIN(0), \
-    HID_LOGICAL_MAX(255), \
-    HID_REPORT_SIZE(8), \
-    HID_REPORT_COUNT(64), \
-    HID_INPUT(HID_DATA | HID_VARIABLE | HID_ABSOLUTE), \
-    HID_USAGE(0x06), \
-    HID_LOGICAL_MIN(0), \
-    HID_LOGICAL_MAX(255), \
-    HID_REPORT_SIZE(8), \
-    HID_REPORT_COUNT(64), \
-    HID_OUTPUT(HID_DATA | HID_VARIABLE | HID_ABSOLUTE), \
-  HID_COLLECTION_END
 
-const uint8_t desc_hid_report[] =
-  {
-      TUD_HID_REPORT_DESC_GAMEPAD_16BIT_AXIS(),
 
+
+uint8_t const desc_hid_report[] =
+{
+  TUD_HID_REPORT_DESC_GAMEPAD_16BIT_AXIS(),
 };
 
 uint8_t const desc_hid_report_mouse[] =
@@ -131,6 +102,20 @@ uint8_t const desc_hid_report_mouse[] =
       TUD_HID_REPORT_DESC_MOUSE_ZFSB(),
 };
 
+// HID Report Descriptor for settings_hid
+const uint8_t settings_hid_report_descriptor[] = {
+  0x06, 0x00, 0xFF,  // Usage Page (Vendor Defined 0xFF00)
+  0x09, 0x01,        // Usage (0x01)
+  0xA1, 0x01,        // Collection (Application)
+  0x85, 0x02,        //   Report ID (2)
+  0x09, 0x02,        //   Usage (0x02)
+  0x15, 0x00,        //   Logical Minimum (0)
+  0x26, 0xFF, 0x00,  //   Logical Maximum (255)
+  0x75, 0x08,        //   Report Size (8)
+  0x95, 0x3F,        //   Report Count (63)
+  0xB1, 0x02,        //   Feature (Data,Var,Abs,No Wrap,Linear,Preferred State,No Null Position,Non-volatile)
+  0xC0,              // End Collection
+};
 
 // Joystick report strcut
 typedef struct TU_ATTR_PACKED
@@ -143,7 +128,6 @@ typedef struct TU_ATTR_PACKED
   int16_t ry = 0;       ///< Delta Ry movement of analog right trigger
   uint8_t hat = 0;      ///< Buttons mask for currently pressed buttons in the DPad/hat
   uint32_t buttons = 0; ///< Buttons mask for currently pressed buttons
-  uint8_t customData[47]; ///< Custom data
 } hid_joystick_report_t;
 
 // Define the HID mouse report structure
@@ -155,9 +139,7 @@ typedef struct TU_ATTR_PACKED {
     int8_t  pan;     // using AC Pan
 } hid_mouse_zfsb_report_t;
 
-typedef struct TU_ATTR_PACKED
-{
-  uint8_t settings[64];
-} hid_joystick_settings_report_t;
+
+
 
 #endif // HID_HEADER_FILE_H

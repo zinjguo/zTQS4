@@ -2,6 +2,7 @@
     "files.associations": {
         ".theme": "php",
         "bitset": "cpp",
-        "stdexcept": "cpp"
+        "stdexcept": "cpp",
+        "chrono": "cpp"
     }
 }
